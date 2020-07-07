@@ -110,6 +110,11 @@ use crate::io::prelude::*;
 
 use crate::ffi::OsStr;
 use crate::fmt;
+use crate::future::Future;
+use crate::sync::Arc;
+use crate::task::{Context, Poll, Wake};
+use crate::thread::{self, Thread};
+use crate::pin::Pin;
 use crate::fs;
 use crate::io::{self, Initializer, IoSlice, IoSliceMut};
 use crate::path::Path;
@@ -1692,6 +1697,59 @@ impl<E: fmt::Debug> Termination for Result<!, E> {
         let Err(err) = self;
         eprintln!("Error: {:?}", err);
         ExitCode::FAILURE.report()
+    }
+}
+
+#[unstable(feature = "termination_trait_lib", issue = "43301")]
+impl<T, F> Termination for F
+where
+    T: Termination,
+    F: Future<Output = T>,
+{
+    fn report(self) -> i32 {
+        /// A Waker impl that wakes up the current thread when woken.
+        struct ThreadWaker(Thread);
+
+        impl ThreadWaker {
+            fn new() -> Self {
+                Self(thread::current())
+            }
+        }
+
+        impl Wake for ThreadWaker {
+            fn wake(self: Arc<Self>) {
+                self.0.unpark();
+            }
+        }
+
+        /// Run a future to completion on the current thread.
+        ///
+        /// # Safety
+        ///
+        /// This method may deadlock in nested calls; this should
+        /// only be called once at the root of fn main.
+        fn block_on<F, T>(mut fut: F) -> T
+        where
+            F: Future<Output = T>,
+        {
+            // This is safe because we don't move or mutate the Future.
+            let mut fut = unsafe { Pin::new_unchecked(&mut fut) };
+
+            // Create a new Context to be passed to the future.
+            let waker = Arc::new(ThreadWaker::new()).into();
+            let mut cx = Context::from_waker(&waker);
+
+            // Run the future to completion.
+            loop {
+                match fut.as_mut().poll(&mut cx) {
+                    Poll::Ready(res) => return res,
+                    Poll::Pending => thread::park(),
+                }
+            }
+        }
+
+        /// Run `self` to completion.
+        block_on(self)
     }
 }
 
