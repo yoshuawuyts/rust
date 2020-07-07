@@ -1748,7 +1748,7 @@ where
             }
         }
 
-        /// Run `self` to completion.
+        // Run `self` to completion.
         block_on(self)
     }
 }

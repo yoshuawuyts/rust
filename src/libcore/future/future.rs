@@ -119,3 +119,6 @@ where
         Pin::get_mut(self).as_mut().poll(cx)
     }
 }
+
+#[stable(feature = "never_unit_impl_future", since = "1.46.0")]
+impl !Future for () {}
