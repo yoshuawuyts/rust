@@ -175,8 +175,13 @@ use crate::time::Duration;
 #[macro_use]
 mod local;
 
+mod scope;
+
 #[stable(feature = "rust1", since = "1.0.0")]
 pub use self::local::{AccessError, LocalKey};
+
+#[unstable(feature = "thread_join", issue = "none")]
+pub use scope::{scope, ScopedJoinHandle, ScopedThreadBuilder};
 
 // The types used by the thread_local! macro to access TLS keys. Note that there
 // are two types, the "OS" type and the "fast" type. The OS thread local key
