@@ -1932,6 +1932,14 @@ impl_eq! { Cow<'a, str>, str }
 impl_eq! { Cow<'a, str>, &'b str }
 impl_eq! { Cow<'a, str>, String }
 
+#[stable(feature = "str_char_eq", since = "1.50.0")]
+impl PartialEq<char> for String {
+    #[inline]
+    fn eq(&self, other: &char) -> bool {
+        PartialEq::eq(&self[..], other)
+    }
+}
+
 #[stable(feature = "rust1", since = "1.0.0")]
 impl Default for String {
     /// Creates an empty `String`.

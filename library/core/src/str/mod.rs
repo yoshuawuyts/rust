@@ -1920,7 +1920,7 @@ impl str {
         if let Some((a, b)) = matcher.next_reject() {
             i = a;
             j = b; // Remember earliest known match, correct it below if
-            // last match is different
+                   // last match is different
         }
         if let Some((_, b)) = matcher.next_reject_back() {
             j = b;
@@ -2495,4 +2495,15 @@ impl_fn_for_zst! {
         // SAFETY: not safe
         unsafe { from_utf8_unchecked(bytes) }
     };
+}
+
+#[stable(feature = "str_char_eq", since = "1.50.0")]
+impl PartialEq<char> for str {
+    #[inline]
+    fn eq(&self, other: &char) -> bool {
+        match self.len() {
+            1 => *other == self.chars().next().unwrap(),
+            _ => false,
+        }
+    }
 }

@@ -357,6 +357,14 @@ where
     }
 }
 
+#[stable(feature = "str_char_eq", since = "1.50.0")]
+impl<'a> PartialEq<char> for Cow<'a, str> {
+    #[inline]
+    fn eq(&self, other: &char) -> bool {
+        PartialEq::eq(&self[..], other)
+    }
+}
+
 #[stable(feature = "rust1", since = "1.0.0")]
 impl<'a, B: ?Sized> PartialOrd for Cow<'a, B>
 where
