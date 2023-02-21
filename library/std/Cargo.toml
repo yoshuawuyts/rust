@@ -48,6 +48,9 @@ hermit-abi = { version = "0.2.6", features = ['rustc-dep-of-std'] }
 [target.wasm32-wasi.dependencies]
 wasi = { version = "0.11.0", features = ['rustc-dep-of-std'], default-features = false }
 
+[target.wasm32-wasi-preview2.dependencies]
+wasi2 = { version = "0.12.0-experimental.0", features = ['rustc-dep-of-std'], default-features = false, git = "https://github.com/sunfishcode/rust-wasi/", branch = "sunfishcode/experiment" , package = 'wasi' }
+
 [features]
 backtrace = [
   "gimli-symbolize",

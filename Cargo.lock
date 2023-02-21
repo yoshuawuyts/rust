@@ -1779,7 +1779,7 @@ dependencies = [
  "cfg-if",
  "js-sys",
  "libc",
- "wasi",
+ "wasi 0.11.0+wasi-snapshot-preview1",
  "wasm-bindgen",
 ]
 
@@ -5291,7 +5291,8 @@ dependencies = [
  "rustc-demangle",
  "std_detect",
  "unwind",
- "wasi",
+ "wasi 0.11.0+wasi-snapshot-preview1",
+ "wasi 0.12.0-experimental.0",
 ]
 
 [[package]]
@@ -6133,6 +6134,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "wasi"
+version = "0.12.0-experimental.0"
+source = "git+https://github.com/sunfishcode/rust-wasi/?branch=sunfishcode/experiment#8da92d7ff5f07b8eadc43feca64b9f52b9529faa"
+dependencies = [
+ "compiler_builtins",
+ "rustc-std-workspace-alloc",
+ "rustc-std-workspace-core",
+ "wit-bindgen",
+]
+
+[[package]]
 name = "wasm-bindgen"
 version = "0.2.83"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -6297,6 +6309,15 @@ name = "windows_x86_64_msvc"
 version = "0.42.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "447660ad36a13288b1db4d4248e857b510e8c3a225c822ba4fb748c0aafecffd"
+
+[[package]]
+name = "wit-bindgen"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c528d2ebfc375d928a6682a46acab1c125071908fa91378a63feca794c3c515a"
+dependencies = [
+ "bitflags",
+]
 
 [[package]]
 name = "writeable"
