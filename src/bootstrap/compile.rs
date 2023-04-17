@@ -278,13 +278,13 @@ fn copy_self_contained_objects(
             let libunwind_path = copy_llvm_libunwind(builder, target, &libdir_self_contained);
             target_deps.push((libunwind_path, DependencyType::TargetSelfContained));
         }
-    } else if target.ends_with("-wasi") {
+    } else if target.contains("wasi") {
         let srcdir = builder
             .wasi_root(target)
             .unwrap_or_else(|| {
                 panic!("Target {:?} does not have a \"wasi-root\" key", target.triple)
             })
-            .join("lib/wasm32-wasi");
+            .join(target.triple);
         for &obj in &["libc.a", "crt1-command.o", "crt1-reactor.o"] {
             copy_and_stamp(
                 builder,
@@ -378,7 +378,7 @@ pub fn std_cargo(builder: &Builder<'_>, target: TargetSelection, stage: u32, car
             }
         }
 
-        if target.ends_with("-wasi") {
+        if target.contains("wasi") {
             if let Some(p) = builder.wasi_root(target) {
                 let root = format!("native={}/lib/wasm32-wasi", p.to_str().unwrap());
                 cargo.rustflag("-L").rustflag(&root);
