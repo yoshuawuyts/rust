@@ -357,6 +357,17 @@ impl<I: Iterator> IntoIterator for I {
     }
 }
 
+#[stable(feature = "into_iterator_for_tuple", since = "1.80.0")]
+impl<A: IntoIterator, B: IntoIterator> IntoIterator for (A, B) {
+    type Item = (A::Item, B::Item);
+    type IntoIter = core::iter::Zip<A::IntoIter, B::IntoIter>;
+
+    #[inline]
+    fn into_iter(self) -> Self::IntoIter {
+        crate::iter::zip(self.0.into_iter(), self.1.into_iter())
+    }
+}
+
 /// Extend a collection with the contents of an iterator.
 ///
 /// Iterators produce a series of values, and collections can also be thought
